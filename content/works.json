@@ -29,17 +29,17 @@
       "description": ""
     },
     {
-      "title": "Contoh Karya 5",
-      "image": "/images/uploads/sample-5.jpg",
-      "category": "Branding",
+      "title": "My Melancholy Blues - Queen Poster",
+      "image": "/images/uploads/jealousy.png",
+      "category": "Poster",
       "year": "2025",
       "description": ""
     },
     {
-      "title": "Contoh Karya 6",
-      "image": "/images/uploads/sample-6.jpg",
-      "category": "UI/UX",
-      "year": "2024",
+      "title": "Jealousy - Queen Poster",
+      "image": "/images/uploads/my-melancholy-blues.png",
+      "category": "Poster",
+      "year": "2025",
       "description": ""
     }
   ]
