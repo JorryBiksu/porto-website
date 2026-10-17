@@ -39,6 +39,7 @@
     const name = settings.name || "Portofolio";
     document.title = name + " | Portofolio";
     $("#site-name").textContent = name;
+    $("#brand").textContent = name;
     $("#site-tagline").textContent = settings.tagline || "";
     $("#site-about").textContent = settings.about || "";
     $("#site-about").hidden = !settings.about;
@@ -60,15 +61,32 @@
     }
   }
 
+  // Filter berbentuk segmented control: "thumb" kaca bergeser ke kategori aktif.
+  function moveThumb() {
+    const box = $("#filters");
+    const thumb = box.querySelector(".seg-thumb");
+    const on = box.querySelector('.chip[aria-pressed="true"]');
+    if (!thumb || !on) return;
+    thumb.style.width = on.offsetWidth + "px";
+    thumb.style.transform = "translateX(" + on.offsetLeft + "px)";
+  }
+
   function renderFilters() {
     const box = $("#filters");
     box.textContent = "";
+    box.classList.remove("ready");
     const cats = [...new Set(works.map((w) => (w.category || "").trim()).filter(Boolean))];
     if (cats.length < 2) {
       box.hidden = true;
       return;
     }
     box.hidden = false;
+
+    const thumb = document.createElement("span");
+    thumb.className = "seg-thumb";
+    thumb.setAttribute("aria-hidden", "true");
+    box.appendChild(thumb);
+
     [ALL, ...cats].forEach((cat) => {
       const b = document.createElement("button");
       b.type = "button";
@@ -76,12 +94,24 @@
       b.textContent = cat;
       b.setAttribute("aria-pressed", String(cat === activeCat));
       b.addEventListener("click", () => {
+        if (cat === activeCat) return;
         activeCat = cat;
-        renderFilters();
+        box.querySelectorAll(".chip").forEach((c) =>
+          c.setAttribute("aria-pressed", String(c === b))
+        );
+        moveThumb();
+        b.scrollIntoView({ block: "nearest", inline: "nearest" });
         renderGallery();
       });
       box.appendChild(b);
     });
+
+    // Posisikan thumb dulu tanpa animasi, baru aktifkan transisi.
+    requestAnimationFrame(() => {
+      moveThumb();
+      requestAnimationFrame(() => box.classList.add("ready"));
+    });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveThumb);
   }
 
   // Jumlah kolom mengikuti lebar layar. Karya dibagi bergiliran antar kolom
@@ -90,6 +120,7 @@
   let lastCols = colCount();
 
   window.addEventListener("resize", () => {
+    moveThumb();
     const n = colCount();
     if (n !== lastCols) {
       lastCols = n;
@@ -156,6 +187,10 @@
   }
 
   $(".v-close").addEventListener("click", () => viewer.close());
+  // Klik di area kosong (di luar gambar dan tombol) juga menutup viewer.
+  viewer.addEventListener("click", (e) => {
+    if (e.target === viewer) viewer.close();
+  });
   $(".v-prev").addEventListener("click", () => showInViewer(current - 1));
   $(".v-next").addEventListener("click", () => showInViewer(current + 1));
   viewer.addEventListener("keydown", (e) => {
@@ -211,11 +246,12 @@
 
   async function downloadPDF() {
     const btn = $("#pdf-btn");
-    const label = btn.textContent;
+    const lab = btn.querySelector(".btn-label");
+    const label = lab.textContent;
     btn.disabled = true;
 
     try {
-      btn.textContent = "Menyiapkan PDF...";
+      lab.textContent = "Menyiapkan PDF...";
       await loadScript(JSPDF_URL);
       const { jsPDF } = window.jspdf;
 
@@ -242,7 +278,7 @@
       // Satu karya per halaman
       for (let i = 0; i < works.length; i++) {
         const w = works[i];
-        btn.textContent = "Menyiapkan PDF... " + (i + 1) + "/" + works.length;
+        lab.textContent = "Menyiapkan PDF... " + (i + 1) + "/" + works.length;
 
         let img;
         try {
@@ -305,7 +341,7 @@
       console.error(err);
       alert("PDF gagal dibuat: " + err.message);
     } finally {
-      btn.textContent = label;
+      lab.textContent = label;
       btn.disabled = false;
     }
   }
