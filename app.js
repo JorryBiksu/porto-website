@@ -145,6 +145,7 @@
       const card = document.createElement("button");
       card.type = "button";
       card.className = "card";
+      card.style.setProperty("--i", Math.min(i, 8)); // jeda muncul bertahap
       card.addEventListener("click", () => openViewer(i));
 
       const img = document.createElement("img");
@@ -164,6 +165,84 @@
 
       cols[i % cols.length].appendChild(card);
     });
+  }
+
+  /* ---------- Kota mini (animasi di hero) ---------- */
+  function buildCity() {
+    const svg = $(".city");
+    if (!svg) return;
+    const NS = "http://www.w3.org/2000/svg";
+
+    // Acak yang selalu sama setiap halaman dimuat (mulberry32)
+    let a = 7;
+    const rand = () => {
+      a |= 0;
+      a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+
+    // Jendela gedung: sebagian menyala tetap, sebagian berkedip, sebagian gelap
+    const layer = svg.querySelector("#wins");
+    svg.querySelectorAll(".bld[data-cols]").forEach((b) => {
+      const x = +b.getAttribute("x");
+      const y = +b.getAttribute("y");
+      const w = +b.getAttribute("width");
+      const h = +b.getAttribute("height");
+      const cols = +b.dataset.cols;
+      const rows = +b.dataset.rows;
+      const pt = +(b.dataset.pt || 14);
+      const px = 10;
+      const pb = 12;
+      const cw = (w - px * 2) / cols;
+      const ch = (h - pt - pb) / rows;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const win = document.createElementNS(NS, "rect");
+          win.setAttribute("x", (x + px + cw * c + (cw - 7) / 2).toFixed(1));
+          win.setAttribute("y", (y + pt + ch * r + (ch - 9) / 2).toFixed(1));
+          win.setAttribute("width", "7");
+          win.setAttribute("height", "9");
+          win.setAttribute("rx", b.dataset.arch ? "3.5" : "2");
+          const v = rand();
+          let cls = "win";
+          if (v < 0.35) {
+            cls += " on";
+          } else if (v < 0.82) {
+            cls += " tw";
+            const d = 3 + rand() * 4;
+            win.style.setProperty("--d", d.toFixed(1) + "s");
+            win.style.setProperty("--delay", (-rand() * d).toFixed(1) + "s");
+          }
+          win.setAttribute("class", cls);
+          layer.appendChild(win);
+        }
+      }
+    });
+
+    // Rangka zig-zag pada tiang crane
+    const pts = ["M332 270"];
+    let right = true;
+    for (let yy = 270; yy > 78; yy -= 12) {
+      pts.push("L" + (right ? 340 : 332) + " " + (yy - 12));
+      right = !right;
+    }
+    svg.querySelector("#lattice").setAttribute("d", pts.join(" "));
+
+    // Klik kereta: "Tuut!"
+    const bubble = svg.querySelector(".bubble");
+    svg.querySelector(".train").addEventListener("click", () => {
+      svg.classList.remove("toot");
+      void svg.getBoundingClientRect(); // paksa animasi mulai ulang
+      svg.classList.add("toot");
+    });
+    bubble.addEventListener("animationend", () => svg.classList.remove("toot"));
+
+    // Hemat baterai: animasi berhenti saat kota tidak terlihat di layar
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(([e]) => svg.classList.toggle("paused", !e.isIntersecting)).observe(svg);
+    }
   }
 
   /* ---------- Viewer ---------- */
@@ -348,5 +427,6 @@
 
   $("#pdf-btn").addEventListener("click", downloadPDF);
 
+  buildCity();
   init();
 })();
