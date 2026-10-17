@@ -1,7 +1,7 @@
 # Ganti USERNAME/NAMA-REPO dengan repo GitHub kamu, misalnya budi/portofolio
 backend:
   name: github
-  repo: USERNAME/NAMA-REPO
+  repo: JorryBiksu/porto-website
   branch: main
 
 # Saat menjalankan lokal (npx decap-server), login dilewati otomatis.
