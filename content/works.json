@@ -1,0 +1,46 @@
+{
+  "works": [
+    {
+      "title": "Contoh Karya 1",
+      "image": "/images/uploads/sample-1.jpg",
+      "category": "Poster",
+      "year": "2026",
+      "description": "Ini karya contoh. Hapus atau ganti lewat halaman /admin."
+    },
+    {
+      "title": "Contoh Karya 2",
+      "image": "/images/uploads/sample-2.jpg",
+      "category": "Branding",
+      "year": "2026",
+      "description": "Deskripsi singkat tentang konsep, tools, atau klien bisa ditulis di sini."
+    },
+    {
+      "title": "Contoh Karya 3",
+      "image": "/images/uploads/sample-3.jpg",
+      "category": "UI/UX",
+      "year": "2025",
+      "description": "Urutan karya di website mengikuti urutan di daftar CMS. Geser untuk mengatur ulang."
+    },
+    {
+      "title": "Contoh Karya 4",
+      "image": "/images/uploads/sample-4.jpg",
+      "category": "Poster",
+      "year": "2025",
+      "description": ""
+    },
+    {
+      "title": "Contoh Karya 5",
+      "image": "/images/uploads/sample-5.jpg",
+      "category": "Branding",
+      "year": "2025",
+      "description": ""
+    },
+    {
+      "title": "Contoh Karya 6",
+      "image": "/images/uploads/sample-6.jpg",
+      "category": "UI/UX",
+      "year": "2024",
+      "description": ""
+    }
+  ]
+}

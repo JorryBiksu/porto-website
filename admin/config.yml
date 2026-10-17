@@ -1,0 +1,43 @@
+# Ganti USERNAME/NAMA-REPO dengan repo GitHub kamu, misalnya budi/portofolio
+backend:
+  name: github
+  repo: USERNAME/NAMA-REPO
+  branch: main
+
+# Saat menjalankan lokal (npx decap-server), login dilewati otomatis.
+local_backend: true
+
+media_folder: images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: konten
+    label: Konten Website
+    files:
+      - name: works
+        label: Karya
+        file: content/works.json
+        format: json
+        fields:
+          - label: Daftar karya (geser untuk mengatur urutan)
+            name: works
+            widget: list
+            label_singular: karya
+            summary: "{{fields.title}}"
+            fields:
+              - { label: Judul, name: title, widget: string }
+              - { label: Gambar, name: image, widget: image }
+              - { label: Kategori, name: category, widget: string, required: false, hint: "Contoh: Branding, Poster, UI/UX. Tulis persis sama agar terkelompok." }
+              - { label: Tahun, name: year, widget: string, required: false }
+              - { label: Deskripsi, name: description, widget: text, required: false }
+
+      - name: settings
+        label: Profil & Kontak
+        file: content/settings.json
+        format: json
+        fields:
+          - { label: Nama, name: name, widget: string }
+          - { label: Tagline, name: tagline, widget: string, required: false }
+          - { label: Tentang saya, name: about, widget: text, required: false }
+          - { label: Email, name: email, widget: string, required: false }
+          - { label: Link Instagram, name: instagram, widget: string, required: false }

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portofolio</title>
+  <meta name="description" content="Portofolio desain.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="intro">
+        <h1 id="site-name">Portofolio</h1>
+        <p id="site-tagline" class="tagline"></p>
+      </div>
+      <button id="pdf-btn" class="btn" type="button">Unduh PDF</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p id="site-about" class="about"></p>
+
+    <div id="filters" class="filters" role="group" aria-label="Filter kategori"></div>
+
+    <section id="gallery" class="gallery" aria-live="polite"></section>
+
+    <p id="empty" class="empty" hidden>
+      Belum ada karya. Buka <a href="/admin/">/admin</a> untuk menambahkan karya pertamamu.
+    </p>
+  </main>
+
+  <footer class="wrap foot">
+    <a id="contact-email" href="#"></a>
+    <a id="contact-ig" href="#" target="_blank" rel="noopener"></a>
+  </footer>
+
+  <dialog id="viewer" class="viewer" aria-label="Detail karya">
+    <button class="v-close" type="button" aria-label="Tutup">Tutup</button>
+    <button class="v-nav v-prev" type="button" aria-label="Karya sebelumnya">&#8592;</button>
+    <figure class="v-fig">
+      <img id="v-img" alt="">
+      <figcaption>
+        <strong id="v-title"></strong>
+        <span id="v-meta"></span>
+        <p id="v-desc"></p>
+      </figcaption>
+    </figure>
+    <button class="v-nav v-next" type="button" aria-label="Karya berikutnya">&#8594;</button>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
