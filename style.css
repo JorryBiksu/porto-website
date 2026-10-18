@@ -698,6 +698,127 @@ h1 {
   height: 44px;
 }
 
+/* ---------- Tombol admin + pintu berkunci ---------- */
+.pill-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.icon-btn:hover { background: rgba(255, 255, 255, 0.16); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+.gate {
+  width: min(92vw, 380px);
+  max-width: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: visible;
+}
+
+.gate::backdrop {
+  background: rgba(2, 4, 18, 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.gate-card {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  text-align: center;
+  padding: 34px 28px 28px;
+  border-radius: var(--r-xl);
+}
+
+.gate-card h2 { margin: 0; font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; }
+.gate-q { margin: 0; max-width: 30ch; color: var(--muted); }
+
+.gate-x { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; }
+.gate-x svg { width: 14px; height: 14px; }
+
+.gate-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: var(--gold-ink);
+  background:
+    radial-gradient(120% 140% at 20% 0%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #f6dc9c, #dcae55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 8px 24px rgba(214, 163, 70, 0.3);
+}
+
+.gate-icon svg { width: 26px; height: 26px; }
+.gate-icon .sh-open { display: none; }
+.gate-card.open .sh-closed { display: none; }
+.gate-card.open .sh-open { display: inline; }
+
+.gate-form { display: grid; gap: 12px; width: 100%; }
+
+.gate-input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--ink);
+  font: 500 1rem var(--font);
+  text-align: center;
+  outline: none;
+}
+
+.gate-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(240, 204, 130, 0.25); }
+
+.gate-go { justify-content: center; width: 100%; padding: 12px 20px; }
+
+.gate-msg { min-height: 1.4em; margin: 0; font-size: 0.9rem; color: #ffb4bd; }
+
+/* Passkey 6 digit: titik-titik ala layar kunci iPhone */
+.dots { position: relative; display: flex; justify-content: center; gap: 14px; padding: 10px; }
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  transition: background 0.15s, transform 0.15s, border-color 0.15s;
+}
+
+.dot.on { background: var(--gold); border-color: var(--gold); transform: scale(1.12); }
+
+.pin-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.gate-card.shake { animation: shake 0.4s; }
+
+@keyframes shake {
+  20% { transform: translateX(-9px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(4px); }
+}
+
 /* ---------- Layar kecil ---------- */
 @media (max-width: 560px) {
   .wrap { padding: 0 14px; }

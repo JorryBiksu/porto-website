@@ -42,6 +42,15 @@ Galeri dinamis dengan halaman admin (`/admin`) untuk upload karya dan mengatur u
 - Tulis kategori persis sama (huruf besar/kecil) supaya filter di galeri mengelompokkan dengan benar.
 - Mau pakai domain sendiri? Bisa diatur di Netlify (*Domain management*), domain-nya berbayar, tapi alamat `.netlify.app` tetap gratis.
 
+## Tombol admin (gembok) dan kuncinya
+
+Di header ada tombol gembok yang membuka pintu berkunci sebelum masuk ke `/admin`. Kuncinya diatur di `content/gate.json`: bisa **pertanyaan trivia** atau **passkey 6 digit**.
+
+- Kunci bawaan (untuk mencoba): jawabannya `tuut`. **Ganti secepatnya.**
+- Untuk membuat kunci sendiri: jalankan website dengan Live Server, buka `/kunci.html`, isi pertanyaan dan jawabanmu, lalu salin hasilnya ke `content/gate.json`. Commit dan push.
+- Mau mematikan kunci? Isi `content/gate.json` dengan `{ "mode": "off" }`. Tombol gembok akan langsung masuk ke `/admin`.
+- Penting: ini hanya pintu depan. Kuncinya berupa hash yang bisa dilihat siapa pun yang membuka kode website. Pengaman sebenarnya adalah login GitHub di halaman `/admin`.
+
 ## Coba di komputer sendiri (opsional)
 
 ```

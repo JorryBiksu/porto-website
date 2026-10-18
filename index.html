@@ -23,10 +23,15 @@
   <header class="bar wrap">
     <div class="pill glass">
       <a class="brand" id="brand" href="#">Portofolio</a>
-      <button id="pdf-btn" class="btn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
-        <span class="btn-label">Unduh PDF</span>
-      </button>
+      <div class="pill-actions">
+        <button id="admin-btn" class="icon-btn" type="button" aria-label="Masuk admin" title="Admin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        </button>
+        <button id="pdf-btn" class="btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+          <span class="btn-label">Unduh PDF</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -291,6 +296,34 @@
     </button>
   </dialog>
 
+  <!-- Pintu admin: pertanyaan trivia atau passkey 6 digit (diatur di content/gate.json) -->
+  <dialog id="gate" class="gate" aria-labelledby="gate-title">
+    <div class="gate-card glass">
+      <button class="icon-btn gate-x" type="button" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="gate-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="5" y="11" width="14" height="9" rx="2.5"/>
+          <path class="sh-closed" d="M8 11V8a4 4 0 0 1 8 0v3"/>
+          <path class="sh-open" d="M8 11V8a4 4 0 0 1 7.5-2"/>
+        </svg>
+      </div>
+      <h2 id="gate-title">Pintu admin</h2>
+      <p id="gate-q" class="gate-q"></p>
+      <form id="gate-form" class="gate-form" novalidate>
+        <input id="gate-input" class="gate-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Jawaban">
+        <div id="gate-dots" class="dots" hidden>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <input id="gate-pin" class="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" aria-label="Passkey 6 digit">
+        </div>
+        <p id="gate-msg" class="gate-msg" role="alert"></p>
+        <button id="gate-go" class="btn gate-go" type="submit">Buka</button>
+      </form>
+    </div>
+  </dialog>
+
+  <script src="gate.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

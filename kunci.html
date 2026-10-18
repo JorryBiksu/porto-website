@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#050816">
+  <title>Buat kunci admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tool { max-width: 640px; margin: 48px auto; padding: clamp(24px, 5vw, 44px); border-radius: var(--r-xl); display: grid; gap: 18px; }
+    .tool h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.05; letter-spacing: -0.03em; }
+    .tool p { margin: 0; color: var(--muted); }
+    .modes { display: flex; flex-wrap: wrap; gap: 10px; border: 0; padding: 0; margin: 0; }
+    .modes label { display: flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 999px; cursor: pointer; }
+    .modes input { accent-color: #f0cc82; }
+    .field { display: grid; gap: 6px; font-weight: 600; font-size: 0.92rem; }
+    .field input { padding: 13px 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(0, 0, 0, 0.25); color: var(--ink); font: 500 1rem var(--font); outline: none; }
+    .field input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(240, 204, 130, 0.25); }
+    .tool .btn { justify-content: center; }
+    .err { min-height: 1.4em; color: #ffb4bd; }
+    pre { margin: 0; padding: 16px; border-radius: 16px; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.12); overflow-x: auto; font-size: 0.82rem; line-height: 1.5; color: var(--gold-soft); white-space: pre-wrap; word-break: break-all; }
+    ol { margin: 0; padding-left: 20px; color: var(--muted); display: grid; gap: 4px; }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
+
+  <main class="wrap">
+    <section class="tool glass">
+      <h1>Buat kunci admin</h1>
+      <p>Halaman ini mengubah jawabanmu menjadi "sidik jari" (hash) langsung di browser. Jawaban aslinya tidak dikirim ke mana pun dan tidak disimpan.</p>
+
+      <form id="f" novalidate style="display:grid;gap:16px">
+        <fieldset class="modes">
+          <label><input type="radio" name="mode" value="trivia" checked> Pertanyaan trivia</label>
+          <label><input type="radio" name="mode" value="pin"> Passkey 6 digit</label>
+        </fieldset>
+
+        <label class="field" id="q-field">Pertanyaan
+          <input id="q" type="text" autocomplete="off" placeholder="Contoh: Apa nama panggilan masa kecilku?">
+        </label>
+
+        <label class="field"><span id="a-label">Jawaban rahasia</span>
+          <input id="a" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        </label>
+
+        <p id="msg" class="err" role="alert"></p>
+        <button id="make" class="btn" type="submit">Buat kunci</button>
+      </form>
+
+      <div id="out" hidden style="display:grid;gap:14px">
+        <ol>
+          <li>Salin hasil di bawah.</li>
+          <li>Buka <b>content/gate.json</b> di VS Code, ganti seluruh isinya dengan hasil ini, lalu simpan.</li>
+          <li>Commit dan push. Kunci baru aktif setelah website ter-update.</li>
+        </ol>
+        <pre id="json"></pre>
+        <button id="copy" class="btn" type="button">Salin hasil</button>
+      </div>
+
+      <p>Tips: pilih jawaban yang tidak ada di media sosialmu dan sulit ditebak orang lain. Passkey 6 digit paling mudah ditebak, jadi trivia lebih disarankan.</p>
+    </section>
+  </main>
+
+  <script src="gate.js"></script>
+  <script>
+    (() => {
+      const $ = (s) => document.querySelector(s);
+      const f = $("#f");
+      const mode = () => f.elements.mode.value;
+
+      function sync() {
+        const pin = mode() === "pin";
+        $("#q-field").hidden = pin;
+        $("#a-label").textContent = pin ? "Passkey (tepat 6 angka)" : "Jawaban rahasia";
+        $("#a").inputMode = pin ? "numeric" : "text";
+        $("#a").maxLength = pin ? 6 : 200;
+        $("#a").value = "";
+      }
+      // Hanya pilihan mode (radio) yang mengatur ulang form, bukan kolom teksnya.
+      f.querySelectorAll('input[name="mode"]').forEach((r) => r.addEventListener("change", sync));
+      sync();
+
+      f.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const msg = $("#msg");
+        msg.textContent = "";
+        $("#out").hidden = true;
+
+        if (!Gate.supported) {
+          msg.textContent = "Halaman ini butuh https atau localhost (misalnya lewat Live Server).";
+          return;
+        }
+
+        const m = mode();
+        const answer = $("#a").value;
+        const question = $("#q").value.trim();
+
+        if (m === "pin") {
+          if (!/^\d{6}$/.test(answer.trim())) {
+            msg.textContent = "Passkey harus tepat 6 angka.";
+            return;
+          }
+        } else {
+          if (!question) {
+            msg.textContent = "Tulis pertanyaannya dulu.";
+            return;
+          }
+          if (Gate.normalize("trivia", answer).length < 3) {
+            msg.textContent = "Jawaban terlalu pendek (minimal 3 huruf atau angka).";
+            return;
+          }
+        }
+
+        const btn = $("#make");
+        btn.disabled = true;
+        btn.textContent = "Membuat...";
+        try {
+          const cfg = await Gate.create(m, m === "pin" ? "Masukkan passkey 6 digit." : question, answer);
+          $("#json").textContent = JSON.stringify(cfg, null, 2);
+          $("#out").hidden = false;
+          $("#out").scrollIntoView({ block: "nearest", behavior: "smooth" });
+        } catch (err) {
+          msg.textContent = "Gagal membuat kunci: " + err.message;
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Buat kunci";
+        }
+      });
+
+      $("#copy").addEventListener("click", async () => {
+        const btn = $("#copy");
+        try {
+          await navigator.clipboard.writeText($("#json").textContent);
+          btn.textContent = "Tersalin";
+        } catch (err) {
+          btn.textContent = "Salin manual dari kotak di atas";
+        }
+        setTimeout(() => { btn.textContent = "Salin hasil"; }, 2000);
+      });
+    })();
+  </script>
+</body>
+</html>
